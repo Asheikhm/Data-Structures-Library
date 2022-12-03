@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/Users/afsanehsheikhmiri/Documents/Afsaneh/Data-Structures-Library/build",
+  "command": "/usr/bin/clang++  -I/Users/afsanehsheikhmiri/Documents/Afsaneh/Data-Structures-Library/data-structures-lib -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -std=gnu++2a -o CMakeFiles/data-structures.dir/tests/vector_test.cpp.o -c /Users/afsanehsheikhmiri/Documents/Afsaneh/Data-Structures-Library/tests/vector_test.cpp",
+  "file": "/Users/afsanehsheikhmiri/Documents/Afsaneh/Data-Structures-Library/tests/vector_test.cpp"
+}
+]
