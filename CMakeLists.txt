@@ -8,3 +8,6 @@ target_compile_features(data-structures PRIVATE cxx_std_20)
 target_include_directories(data-structures PRIVATE
  data-structures-lib
 )
+
+target_sources(data-structures PRIVATE
+tests/vector_test.cpp)
