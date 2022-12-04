@@ -90,10 +90,19 @@ public:
     {
         return m_size;
     }
-    
+
     void reserve(size_t new_cap)
     {
+        if (new_cap > m_capacity)
+        {
+            auto const nbytes = sizeof(T) * new_cap;
+            std::byte new_buffer = new T[nbytes];
 
+            std::uninitialized_copy_n(m_buffer, m_size, new_buffer);
+            std::destroy(m_buffer, m_buffer + m_size);
+            delete[] m_buffer;
+            m_buffer = new_buffer;
+        }
     }
 
     size_t capacity() const noexcept
@@ -137,7 +146,7 @@ public:
         {
             resize(m_size + 1);
         }
-        m_buffer[m_size] = value;
+        new (m_buffer + m_size) T(value);
         ++m_size;
     }
 
@@ -166,51 +175,27 @@ public:
     }
 
     // Resizes the container to contain count elements
-    void resize(size_t count)
+    void resize(size_t count, T const& value = T{})
     {
-        if (m_size > count)
+        if (count > m_capacity)
         {
-            T* new_buffer = new T[m_capacity];
-
-            for (size_t i = 0; i < count; ++i)
-            {
-                new_buffer[i] = m_buffer[i];
-            }
-
-            delete [] m_buffer;
-            m_buffer = new_buffer;
+            reserve(count);
+        }
+  
+        if (count > m_size)
+        {
+            // for (size_t i = m_size; i < count; ++i)
+            // {
+            //     new (m_buffer + i) T();
+            // }
+            std::uninitialized_fill_n(m_buffer + m_size, count - m_size, value);
         }
         
-        if (m_size < count && m_capacity < count)
+        if (count < m_size)
         {
-            m_capacity = 2 * count;
-            T* new_buffer = new T[m_capacity];
-
-            for (size_t i = 0; i < m_size; ++i)
-            {
-                new_buffer[i] = m_buffer[i];
-            }
-
-            delete [] m_buffer;
-            m_buffer = new_buffer;            
+            std::destroy_n(m_buffer + count, m_size - count);
         }
-        else if (m_size < count && m_capacity > count)
-        {
-            T* new_buffer = new T[m_capacity];
-
-            for (size_t i = 0; i < m_size; ++i)
-            {
-                new_buffer[i] = m_buffer[i];
-            }
-
-            for (size_t i = count - m_size - 1; i < count; ++i)
-            {
-                new_buffer[i] = 0;
-            }
-
-            delete [] m_buffer;
-            m_buffer = new_buffer;
-        }
+        m_size = count;
     }
 
 private:
