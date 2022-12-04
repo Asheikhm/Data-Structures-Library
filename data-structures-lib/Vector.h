@@ -22,7 +22,7 @@ public:
     {
         m_size = 0;
         m_capacity = DEFAULT_CAPACITY;
-        m_buffer = new std::byte[m_capacity];
+        m_buffer = reinterpret_cast<T*>(new std::byte[m_capacity]);
     }
 
     // copy constructor
@@ -31,7 +31,7 @@ public:
         m_capacity = other.capacity();
         m_size = other.size();
         auto const nbytes = sizeof(T) * m_capacity;
-        m_buffer = new std::byte[nbytes];
+        m_buffer = reinterpret_cast<T*>(new std::byte[nbytes]);
 
         std::uninitialized_copy_n(other.m_buffer, other.m_size, m_buffer);
         // for (size_t i = 0; i < m_size; ++i)
@@ -96,7 +96,7 @@ public:
         if (new_cap > m_capacity)
         {
             auto const nbytes = sizeof(T) * new_cap;
-            std::byte new_buffer = new T[nbytes];
+            T* new_buffer = reinterpret_cast<T*>(new std::byte[nbytes]);
 
             std::uninitialized_copy_n(m_buffer, m_size, new_buffer);
             std::destroy(m_buffer, m_buffer + m_size);
@@ -199,7 +199,7 @@ public:
     }
 
 private:
-    std::byte* m_buffer;
+    T* m_buffer;
     size_t m_size;
     size_t m_capacity;
 };
