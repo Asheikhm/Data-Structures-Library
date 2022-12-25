@@ -54,19 +54,19 @@ TEST_CASE("Adding elements")
 
 TEST_CASE("Reserve")
 {
-    vector v1;
-    v1.reserve(20);
-    v1.push_back(1);
-    CHECK(v1.size() == 1);
-    CHECK(v1.capacity() == 20);
+    vector v6;
+    v6.reserve(20);
+    v6.push_back(1);
+    CHECK(v6.size() == 1);
+    CHECK(v6.capacity() == 20);
 }
 
 TEST_CASE("Resize")
 {
-    vector v1 = vector();
-    CHECK(v1.size() == 0);
-    CHECK(v1.capacity() == 10);
-    v1.resize(20);
-    CHECK(v1.size() == 20);
-    CHECK(v1.capacity() == 40);
+    vector v7 = vector();
+    CHECK(v7.size() == 0);
+    CHECK(v7.capacity() == 10);
+    v7.resize(20);
+    CHECK(v7.size() == 20);
+    CHECK(v7.capacity() == 40);
 }

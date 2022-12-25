@@ -25,7 +25,8 @@ public:
     {
         m_size = 0;
         m_capacity = default_capacity();
-        m_buffer = reinterpret_cast<T*>(new std::byte[m_capacity]);
+        auto const nbytes = sizeof(T) * m_capacity;
+        m_buffer = reinterpret_cast<T*>(new std::byte[nbytes]);
     }
 
     // copy constructor
@@ -209,6 +210,7 @@ public:
             std::cout << "uninitialized_fill_n values for N COUNTS : " << count - m_size << std::endl;
 
             std::uninitialized_fill_n(m_buffer + m_size, count - m_size, value);
+            std::cout << "uninitialized_fill_n DONE" << std::endl;
         }
         
         if (count < m_size)
