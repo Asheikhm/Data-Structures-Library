@@ -5,13 +5,16 @@
 #include <memory>
 #include <cstddef>
 
-const int DEFAULT_CAPACITY = 10;
 
 // template <class T>
 class vector {
 
 public:
-
+    static constexpr size_t default_capacity()
+    {
+        return 10ULL;
+    }
+    
     using T = int;
     using value_type = T;
     using iterator = int*;
@@ -21,7 +24,7 @@ public:
     vector()
     {
         m_size = 0;
-        m_capacity = DEFAULT_CAPACITY;
+        m_capacity = default_capacity();
         m_buffer = reinterpret_cast<T*>(new std::byte[m_capacity]);
     }
 
@@ -41,6 +44,7 @@ public:
     }
 
     vector(size_t init_size)
+    : vector()
     {
         resize(init_size);
     }
@@ -102,6 +106,7 @@ public:
             std::destroy(m_buffer, m_buffer + m_size);
             delete[] m_buffer;
             m_buffer = new_buffer;
+            m_capacity = new_cap;
         }
     }
 
@@ -141,27 +146,37 @@ public:
     
     // the new element is initialized as a copy of value
     void push_back(const T& value)
-    {
+    {       
+        std::cout << "Push_back value : " << value <<std::endl;
+
         if (m_size + 1 > m_capacity)
         {
-            resize(m_size + 1);
+            resize(m_size + 1, value);
         }
-        new (m_buffer + m_size) T(value);
+        else
+        {
+            new (m_buffer + m_size) T(value);
+        }
         ++m_size;
     }
 
     // value is moved into the new element
     void push_back(T&& value)
     {
+        std::cout << "Push_back value : " << value <<std::endl;
+
         if (m_size + 1 > m_capacity)
         {
-            resize(m_size + 1);
+            resize(m_size + 1, value);
         }
-        // At the address m_buffer + m_size, call T constructor and give it the argument "value".
-        // can be a copy or a move constructor, depending of how T is implemented.
-        // std::forward
-        new (m_buffer + m_size) T(value);
-        ++m_size;
+        else
+        {
+            // At the address m_buffer + m_size, call T constructor and give it the argument "value".
+            // can be a copy or a move constructor, depending of how T is implemented.
+            // std::forward
+            new (m_buffer + m_size) T(value);
+            ++m_size;
+        }
     }
 
     // removes the last element of the container
@@ -179,7 +194,8 @@ public:
     {
         if (count > m_capacity)
         {
-            reserve(count);
+            std::cout << "lets first reserve." << std::endl;
+            reserve(count * 2);
         }
   
         if (count > m_size)
@@ -187,7 +203,11 @@ public:
             // for (size_t i = m_size; i < count; ++i)
             // {
             //     new (m_buffer + i) T();
-            // }
+            // }     
+            std::cout << "uninitialized_fill_n values for size : " << m_size << std::endl;
+            std::cout << "uninitialized_fill_n values for capacity : " << m_capacity << std::endl;
+            std::cout << "uninitialized_fill_n values for N COUNTS : " << count - m_size << std::endl;
+
             std::uninitialized_fill_n(m_buffer + m_size, count - m_size, value);
         }
         
@@ -200,6 +220,6 @@ public:
 
 private:
     T* m_buffer;
-    size_t m_size;
-    size_t m_capacity;
+    size_t m_size = 0;
+    size_t m_capacity = default_capacity();
 };
